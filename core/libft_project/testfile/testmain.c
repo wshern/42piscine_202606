@@ -241,6 +241,7 @@ int sign(int n)
 		return (-1);
 	return (0);
 }
+// for memcmp and strncmp
 
 static void test_memcmp(void)
 {
@@ -279,8 +280,101 @@ static void test_strlcpy(void)
 		printf("ft_strlcpy FAIL - must write nothing!\n");
 	else if (strlcpy(dest1, src, 1) != ft_strlcpy(dest2, src, 1))
 		printf("ft_strlcpy FAIL - more than NULL error!\n");
+	else if (memcmp(dest1, dest2, 1) != 0)
+		printf("ft_strlcpy FAIL - null not copied!\n");
 	else
 		printf("ft_strlcpy OK!\n");
+}
+
+static void test_strlcat(void)
+{
+	char *src = "Hello World";
+	char dest1[30] = "Test World";
+	char dest2[30] = "Test World";
+
+	if (strlcat(dest1, src, 22) != ft_strlcat(dest2, src, 22))
+	{
+		printf("ft_strlcat FAIL - result ERROR!\n");
+		return;
+	}
+	else if (memcmp(dest1, dest2, 22) != 0)
+	{
+		printf("ft_strlcat FAIL - content ERROR!\n");
+		return;
+	}
+	strcpy(dest1, "Test World");
+	strcpy(dest2, "Test World");
+	if (strlcat(dest1, src, 17) != ft_strlcat(dest2, src, 17))
+	{
+		printf("ft_strlcat FAIL - TRUNCATION result EERROR!\n");
+		return;
+	}
+	else if (memcmp(dest1, dest2, 17) != 0)
+	{
+		printf("ft_strlcat FAIL - TRUNCATION content ERROR!\n");
+		return;
+	}
+	strcpy(dest1, "Test World");
+	strcpy(dest2, "Test World");
+	if (strlcat(dest1, src, 5) != ft_strlcat(dest2, src, 5))
+	{
+		printf("ft_strlcat FAIL - dstsize < dst return ERROR\n");
+		return;
+	}
+	strcpy(dest1, "Test World");
+	strcpy(dest2, "Test World");	
+	if (strlcat(dest1, src, 0) != ft_strlcat(dest2, src, 0))
+			printf("ft_strlcat FAIL - n=0\n");
+	else printf("ft_strlcat OK!\n");
+}
+
+static void test_toupper_tolower(void)
+{
+	int i;
+	int result = 1;
+
+	i = -10;
+	while (i < 300)
+	{
+		if (toupper(i) != ft_toupper(i))
+			result = 0;
+		i++;
+	}
+	if (result == 1)
+		printf("ft_toupper OK!\n");
+	else
+		printf("ft_toupper FAIL!\n");
+	i = -10;
+	while (i < 300)
+	{
+		if (tolower(i) != ft_tolower(i))
+			result = 0;
+		i++;
+	}
+	if (result == 1)
+		printf("ft_tolower OK!\n");
+	else
+		printf("ft_tolower FAIL!\n");
+}
+
+static void test_strchr_strrchr(void)
+{
+	char *str = "Hello World";
+
+	if (strchr(str, 'l') != ft_strchr(str, 'l'))
+		printf("ft_strchr FAIL - return ERROR!\n");
+	else if (strchr(str, 'z') != ft_strchr(str, 'z'))
+		printf("ft_strchr FAIL - not found ERROR!\n");
+	else if (strchr(str, '\0') != ft_strchr(str, '\0'))
+		printf("ft_strchr FAIL - null ERROR!\n");
+	else if (strrchr(str, 'l') != ft_strrchr(str, 'l'))
+		printf("ft_strchr FAIL - REVERSE return ERROR!\n");
+	else if (strrchr(str, 'z') != ft_strrchr(str, 'z'))
+		printf("ft_strrchr FAIL - REVERSE not found ERROR!\n");
+	else if (strrchr(str, '\0') != ft_strrchr(str, '\0'))
+		printf("ft_strrchr FAIL - REVERSE null ERROR!\n");
+	else
+		printf("ft_strchr OK!\nft_strrchr OK!\n");
 }
 
 int	main(void)
@@ -298,5 +392,8 @@ int	main(void)
 	test_memchr();
 	test_memcmp();
 	test_strlcpy();
+	test_strlcat();
+	test_toupper_tolower();
+	test_strchr_strrchr();
 	return (0);
 }
