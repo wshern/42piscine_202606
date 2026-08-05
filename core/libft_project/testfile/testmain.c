@@ -377,6 +377,146 @@ static void test_strchr_strrchr(void)
 		printf("ft_strchr OK!\nft_strrchr OK!\n");
 }
 
+static void test_strncmp(void)
+{
+	char *s1 = "Test 12345";
+	char *s2 = "Test 12a45";
+	char *a = "\200";
+	char *b = "\0";
+
+	if (sign(strncmp(s1, s2, 11)) != sign(ft_strncmp(s1, s2, 11)))
+		printf("ft_strncmp FAIL - differ\n");
+	else if (sign(strncmp(s1, s1, 11)) != sign(ft_strncmp(s1, s1, 11)))
+		printf("ft_strncmp FAIL - identical\n");
+	else if (sign(strncmp(s1, s2, 0)) != sign(ft_strncmp(s1, s2, 0)))
+		printf("ft_strncmp FAIL - n=0\n");
+	else if (sign(strncmp(a, b, 1)) != sign(ft_strncmp(a, b, 1)))
+		printf("ft_strncmp FAIL - byte > 127\n");
+	else if (sign(strncmp("abc", "abcd", 5)) != sign(ft_strncmp("abc", "abcd", 5)))
+		printf("ft_strncmp FAIL - diff str length error!\n");
+	else if (sign(strncmp(s1, s2, 3)) != sign(ft_strncmp(s1, s2, 3)))
+		printf("ft_strncmp FAIL - comparison error!\n");
+	else
+		printf("ft_strncmp OK!\n");
+}
+
+static void test_strnstr(void)
+{
+	char *str = "Test Stri3ng";
+	char *find = "st Stri";
+
+	if (strnstr(str, find, 13) != ft_strnstr(str, find, 13))
+	{
+		printf("ft_strnstr FAIL - 'found' ERROR!\n");
+		return;
+	}
+	if (strnstr(str, find, 5) != ft_strnstr(str, find, 5))
+	{
+		printf("ft_strnstr FAIL - (n < needle) ERROR!\n");
+		return;
+	}
+	if (strnstr(str, find, 0) != ft_strnstr(str, find, 0))
+	{
+		printf("ft_strnstr FAIL - n=0 ERROR!\n");
+		return;
+	}
+	find = "z";
+	if (strnstr(str, find, 13) != ft_strnstr(str, find, 13))
+	{	
+		printf("ft_strnstr FAIL - 'not found' ERROR!\n");
+		return;
+	}
+	find = "";
+	if (strnstr(str, find, 13) != ft_strnstr(str, find, 13))
+	{
+		printf("ft_strnstr FAIL - empty needle ERROR!\n");
+		return;
+	}
+	str = "Test";
+	find = "Testt";
+	if (strnstr(str, find, 6) != ft_strnstr(str, find, 6))
+	{
+		printf("ft_strnstr FAIL - (needle > haystack) ERROR!\n");
+		return;
+	}
+	else
+		printf("ft_strnstr OK!\n");
+}
+
+static void	test_atoi(void)
+{
+	char	*cases[] = {"42", "-42", "+42", "   \t\n42", "42abc",
+		"abc", "", "--42", "-", "2147483647", "-2147483648", "0", "-0"};
+	int		i;
+	int		n;
+
+	n = sizeof(cases) / sizeof(cases[0]);
+	i = 0;
+	while (i < n)
+	{
+		if (ft_atoi(cases[i]) != atoi(cases[i]))
+		{
+			printf("atoi FAIL on \"%s\"\n", cases[i]);
+			return ;
+		}
+		i++;
+	}
+	printf("ft_atoi OK!\n");
+}
+
+static void test_calloc(void)
+{
+	char	*ptr;
+	char	*ptr1;
+	char	*ptr2;
+
+	ptr = ft_calloc(0, 0);
+	if (ptr == NULL)
+	{
+		printf("ft_calloc FAIL - not non-NULL\n");
+		free(ptr);
+		return;
+	}
+	ptr1 = ft_calloc(10, sizeof(char));
+	ptr2 = calloc(10, sizeof(char));
+	if (ptr1 == NULL)
+		printf("ft_calloc FAIL - NULL\n");
+	else if (memcmp(ptr1, ptr2, 10) != 0)
+		printf("ft_calloc FAIL -not zeroed!\n");
+	else
+		printf("ft_calloc OK!\n");
+	free(ptr);
+	free(ptr1);
+	free(ptr2);
+}
+
+static void test_strdup(void)
+{
+	char *str = "Test string";
+	char *ptr1;
+	char *ptr2;
+
+	ptr1 = strdup(str);
+	ptr2 = ft_strdup(str);
+	if (ptr2 == NULL)
+		printf("ft_strdup FAIL - returned NULL!\n");
+	else if (strcmp(ptr1, ptr2) != 0)
+		printf("ft_strdup FAIL - content!\n");
+	else if (ptr2 == str)
+		printf("ft_strdup FAIL - same address!\n");
+	free(ptr1);
+	free(ptr2);
+	str = "";
+	ptr1 = strdup(str);
+	ptr2 = ft_strdup(str);
+	if (strcmp(ptr1, ptr2) != 0)
+		printf("ft_strdup FAIL - duplicate not empty!\n");
+	else
+		printf("ft_strdup OK!\n");
+	free(ptr1);
+	free(ptr2);
+}
+
 int	main(void)
 {
 	test_strlen();
@@ -395,5 +535,10 @@ int	main(void)
 	test_strlcat();
 	test_toupper_tolower();
 	test_strchr_strrchr();
+	test_strncmp();
+	test_strnstr();
+	test_atoi();
+	test_calloc();
+	test_strdup();
 	return (0);
 }
